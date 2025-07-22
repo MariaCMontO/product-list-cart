@@ -15,7 +15,7 @@ function App() {
     decreaseFromCart,
     deleteFromCart,
     totalCart,
-    restartCart
+    restartCart,
   } = useCart();
 
   const [modal, setModal] = useState(false);
@@ -29,13 +29,22 @@ function App() {
               className="absolute w-full h-full top-0 left-0 bg-black z-10 opacity-50"
               onClick={() => setModal(false)}
             ></div>
-            <div className="bg-white absolute w-full md:w-[590px] top-[95px] md:top-1/2 md:-translate-y-1/2 left-0 md:left-1/2 md:-translate-x-1/2 h-fit opacity-1 z-20 rounded-tl-lg rounded-tr-lg md:rounded-2xl px-7 md:p-11 py-11 flex flex-col gap-7 items-start">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="modal-title"
+              aria-describedby="modal-desc"
+              className="bg-white absolute w-full md:w-[590px] top-[95px] md:top-1/2 md:-translate-y-1/2 left-0 md:left-1/2 md:-translate-x-1/2 h-fit opacity-1 z-20 rounded-tl-lg rounded-tr-lg md:rounded-2xl px-7 md:p-11 py-11 flex flex-col gap-7 items-start"
+            >
               <img src="/icon-order-confirmed.svg" alt="" aria-hidden="true" />
               <div className="flex flex-col gap-4">
-                <h2 className="text-rose-900 text-5xl font-bold text-start">
+                <h2
+                  id="modal-title"
+                  className="text-rose-900 text-5xl font-bold text-start"
+                >
                   Order Confirmed
                 </h2>
-                <p className="text-rose-500 font-medium">
+                <p id="modal-desc" className="text-rose-500 font-medium">
                   We hope you enjoy your food!
                 </p>
               </div>
@@ -58,8 +67,8 @@ function App() {
                 aria-label="Click this button to start a new order"
                 type="button"
                 onClick={() => {
-                  restartCart()
-                  setModal(false)
+                  restartCart();
+                  setModal(false);
                 }}
               >
                 Start New Order
