@@ -34,7 +34,7 @@ export default function ProductDetail({
               onClick={() => addToCart(product)}
             >
               <img src="/icon-add-to-cart.svg" alt="Add to cart Icon" />
-              <p className="font-medium">Add to Cart</p>
+              <p className="font-medium text-sm">Add to Cart</p>
             </button>
           </>
         ) : (
