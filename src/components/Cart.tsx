@@ -18,7 +18,7 @@ export default function Cart({
   totalCart,
   setModal,
 }: CartProps) {
->
+
   const isEmpty = useMemo(() => cart.length === 0, [cart])
 
   return (
