@@ -1,20 +1,21 @@
 import type { ProductItem } from "../types";
 
-export const useCart = () => {
+
+export const useCart = (cart: ProductItem[]) => {
 
   //Funciones auxiliares
-  function itemInCart(id: number, cart:ProductItem[]): ProductItem | undefined {
+  function itemInCart(id: number): ProductItem | undefined {
     return cart.find((item) => item.id === id);
   }
 
-  function totalProduct(id: number, cart: ProductItem[]) {
-    const product = itemInCart(id, cart);
+  function totalProduct(id: number) {
+    const product = itemInCart(id);
     if (product) {
       return product?.price * product?.amount;
     }
   }
 
-  function totalCart(cart: ProductItem[]) {
+  function totalCart() {
     return cart.reduce((sum, item) => {
       return sum + item.price * item.amount;
     }, 0);

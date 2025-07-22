@@ -1,14 +1,12 @@
 import type { ProductItem } from "../types";
 
 type ProductCartProps = {
-   cart: ProductItem[],
   product: ProductItem;
-  totalProduct(id: number, cart: ProductItem[]): number | undefined
+  totalProduct(id: number): number | undefined
   deleteFromCart(product: ProductItem): void;
 };
 
 export default function ProductCart({
-  cart,
   product,
   totalProduct,
   deleteFromCart,
@@ -24,7 +22,7 @@ export default function ProductCart({
           @ ${product.price.toFixed(2)}
         </span>
         <span className="text-rose-500 font-semibold">
-          ${totalProduct(product.id, cart)?.toFixed(2)}
+          ${totalProduct(product.id)?.toFixed(2)}
         </span>
       </div>
       <button

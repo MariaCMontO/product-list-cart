@@ -5,9 +5,9 @@ import ProductCart from "./ProductCart";
 
 type CartProps = {
   cart: ProductItem[];
-  totalProduct(id: number, cart: ProductItem[]): number | undefined;
+  totalProduct(id: number): number | undefined;
   dispatch: React.ActionDispatch<[action: CartActions]>
-  totalCart(cart: ProductItem[]): number,
+  totalCart(): number,
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -36,7 +36,6 @@ export default function Cart({
         <>
           {cart.map((product) => (
             <ProductCart
-              cart={cart}
               key={product.id}
               product={product}
               totalProduct={totalProduct}
@@ -47,7 +46,7 @@ export default function Cart({
           <div className="flex justify-between items-center">
             <p>Order Total</p>
             <p className="text-2xl text-rose-900 font-bold">
-              ${totalCart(cart).toFixed(2)}
+              ${totalCart().toFixed(2)}
             </p>
           </div>
           <div className="flex gap-2 bg-rose-50 py-4 px-4 rounded">

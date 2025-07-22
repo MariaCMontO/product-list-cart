@@ -9,7 +9,7 @@ import { useCart } from "./hooks/useCart";
 function App() {
   const [state, dispatch] = useReducer(cartReducer, initialState);
 
-  const { itemInCart, totalProduct, totalCart } = useCart();
+  const { itemInCart, totalProduct, totalCart } = useCart(state.cart);
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(state.cart));
@@ -51,13 +51,12 @@ function App() {
                     key={product.id}
                     product={product}
                     totalProduct={totalProduct}
-                    cart={state.cart}
                   />
                 ))}
                 <div className="flex justify-between items-center">
                   <p>Order Total</p>
                   <p className="text-2xl text-rose-900 font-bold">
-                    ${totalCart(state.cart).toFixed(2)}
+                    ${totalCart().toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -85,7 +84,6 @@ function App() {
           <div className="flex flex-col gap-6 md:grid md:grid-cols-3">
             {data.map((product) => (
               <ProductDetail
-                cart={state.cart}
                 key={product.id}
                 product={product}
                 dispatch={dispatch}
