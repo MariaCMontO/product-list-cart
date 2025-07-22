@@ -1,11 +1,13 @@
 import type { ProductItem } from "../types";
 
 type ProductOrderConfirmProps = {
+  cart: ProductItem[],
   product: ProductItem;
-  totalProduct(id: number): number | undefined;
+  totalProduct(id: number, cart: ProductItem[]): number | undefined
 };
 
 export default function ProductOrderConfirm({
+  cart,
   product,
   totalProduct,
 }: ProductOrderConfirmProps) {
@@ -28,7 +30,7 @@ export default function ProductOrderConfirm({
         </div>
       </div>
       <span className="text-rose-900 font-semibold text-sm">
-        ${totalProduct(product.id)?.toFixed(2)}
+        ${totalProduct(product.id, cart)?.toFixed(2)}
       </span>
     </div>
   );

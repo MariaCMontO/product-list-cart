@@ -1,22 +1,19 @@
-import { useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import Cart from "./components/Cart";
 import ProductDetail from "./components/ProductDetail";
 import ProductOrderConfirm from "./components/ProductOrderConfirmed";
 import data from "./data/data.json";
+import { cartReducer, initialState } from "./reducer/cart-reducer";
 import { useCart } from "./hooks/useCart";
 
 function App() {
-  const {
-    cart,
-    addToCart,
-    isEmpty,
-    itemInCart,
-    totalProduct,
-    decreaseFromCart,
-    deleteFromCart,
-    totalCart,
-    restartCart,
-  } = useCart();
+  const [state, dispatch] = useReducer(cartReducer, initialState);
+
+  const { itemInCart, totalProduct, totalCart } = useCart();
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(state.cart));
+  }, [state.cart]);
 
   const [modal, setModal] = useState(false);
 
@@ -49,16 +46,18 @@ function App() {
                 </p>
               </div>
               <div className="p-6 bg-rose-50 rounded w-full flex flex-col gap-4">
-                {cart.map((product) => (
+                {state.cart.map((product) => (
                   <ProductOrderConfirm
+                    key={product.id}
                     product={product}
                     totalProduct={totalProduct}
+                    cart={state.cart}
                   />
                 ))}
                 <div className="flex justify-between items-center">
                   <p>Order Total</p>
                   <p className="text-2xl text-rose-900 font-bold">
-                    ${totalCart().toFixed(2)}
+                    ${totalCart(state.cart).toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -67,7 +66,7 @@ function App() {
                 aria-label="Click this button to start a new order"
                 type="button"
                 onClick={() => {
-                  restartCart();
+                  dispatch({ type: "restart cart", payload: {} });
                   setModal(false);
                 }}
               >
@@ -86,21 +85,20 @@ function App() {
           <div className="flex flex-col gap-6 md:grid md:grid-cols-3">
             {data.map((product) => (
               <ProductDetail
+                cart={state.cart}
                 key={product.id}
                 product={product}
-                addToCart={addToCart}
+                dispatch={dispatch}
                 itemInCart={itemInCart}
-                decreaseFromCart={decreaseFromCart}
               />
             ))}
           </div>
         </div>
         <div className="md:w-1/3">
           <Cart
-            cart={cart}
-            isEmpty={isEmpty}
+            cart={state.cart}
             totalProduct={totalProduct}
-            deleteFromCart={deleteFromCart}
+            dispatch={dispatch}
             totalCart={totalCart}
             setModal={setModal}
           />

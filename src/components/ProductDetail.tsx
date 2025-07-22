@@ -1,22 +1,27 @@
+import type { CartActions } from "../reducer/cart-reducer";
 import type { Product, ProductItem } from "../types";
 
 type ProductDetailProps = {
+  cart: ProductItem[];
   product: Product;
-  addToCart(product: Product): void;
-  itemInCart(id: number): ProductItem | undefined;
-  decreaseFromCart(product: Product): void;
+  dispatch: React.ActionDispatch<[action: CartActions]>,
+   itemInCart(id: number, cart: ProductItem[]): ProductItem | undefined
 };
 
 export default function ProductDetail({
+  cart,
   product,
-  addToCart,
+  dispatch,
   itemInCart,
-  decreaseFromCart
 }: ProductDetailProps) {
+
+
+  const {id}= product;
+
   return (
     <div aria-labelledby="product-name" className="">
       <div className="relative mb-10">
-        {itemInCart(product.id) === undefined || itemInCart(product.id)?.amount ===0 ? (
+        {itemInCart(id, cart) === undefined || itemInCart(id, cart)?.amount ===0 ? (
           <>
             <img
               className="rounded-lg"
@@ -31,7 +36,7 @@ export default function ProductDetail({
               className="absolute w-[163.78px] bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 flex bg-white border border-rose-400 items-center justify-center gap-2 py-3 px-6 rounded-full"
               aria-label="Click this button to add the product to the cart"
               type="button"
-              onClick={() => addToCart(product)}
+              onClick={() => dispatch({type:'add to cart', payload:{product}})}
             >
               <img src="/icon-add-to-cart.svg" alt="Add to cart Icon" />
               <p className="font-medium text-sm">Add to Cart</p>
@@ -53,7 +58,7 @@ export default function ProductDetail({
                 className="border rounded-full w-auto h-[15px] p-[2px]"
                 aria-label="Click this button to decrement product quantity"
                 type="button"
-                onClick={()=> decreaseFromCart(product)}
+                onClick={()=> dispatch({type:'decrease from cart', payload:{id}})}
               >
                 <img
                   className="w-auto"
@@ -62,13 +67,13 @@ export default function ProductDetail({
                 />
               </button>
               <p className="font-medium text-white">
-                {itemInCart(product.id)?.amount}
+                {itemInCart(id, cart)?.amount}
               </p>
               <button
                 className="border rounded-full w-auto p-[2px]"
                 aria-label="Click this button to increment product quantity"
                 type="button"
-                onClick={()=> addToCart(product)}
+                onClick={()=> dispatch({type:'add to cart', payload:{product}})}
               >
                 <img
                   className="w-auto"

@@ -1,23 +1,26 @@
+import { useMemo } from "react";
+import type { CartActions } from "../reducer/cart-reducer";
 import type { ProductItem } from "../types";
 import ProductCart from "./ProductCart";
 
 type CartProps = {
   cart: ProductItem[];
-  isEmpty: boolean;
-  totalProduct(id: number): number | undefined;
-  deleteFromCart(product: ProductItem): void;
-  totalCart(): number;
+  totalProduct(id: number, cart: ProductItem[]): number | undefined;
+  dispatch: React.ActionDispatch<[action: CartActions]>
+  totalCart(cart: ProductItem[]): number,
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function Cart({
   cart,
-  isEmpty,
   totalProduct,
-  deleteFromCart,
+  dispatch,
   totalCart,
   setModal,
 }: CartProps) {
+>
+  const isEmpty = useMemo(() => cart.length === 0, [cart])
+
   return (
     <div className="bg-white rounded w-full p-6 pb-10 flex flex-col justify-center gap-5">
       <h1 className="text-orange-700 font-bold text-2xl text-left">{`Your Cart (${cart.length})`}</h1>
@@ -33,17 +36,18 @@ export default function Cart({
         <>
           {cart.map((product) => (
             <ProductCart
+              cart={cart}
               key={product.id}
               product={product}
               totalProduct={totalProduct}
-              deleteFromCart={deleteFromCart}
+              deleteFromCart={() => dispatch({type:'delete from cart', payload: {product}})}
             />
           ))}
 
           <div className="flex justify-between items-center">
             <p>Order Total</p>
             <p className="text-2xl text-rose-900 font-bold">
-              ${totalCart().toFixed(2)}
+              ${totalCart(cart).toFixed(2)}
             </p>
           </div>
           <div className="flex gap-2 bg-rose-50 py-4 px-4 rounded">
