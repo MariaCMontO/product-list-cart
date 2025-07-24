@@ -1,29 +1,21 @@
 import { useMemo } from "react";
-import type { CartActions } from "../reducer/cart-reducer";
-import type { ProductItem } from "../types";
 import ProductCart from "./ProductCart";
+import { useCart } from "../hooks/useCart";
 
 type CartProps = {
-  cart: ProductItem[];
-  totalProduct(id: number): number | undefined;
-  dispatch: React.ActionDispatch<[action: CartActions]>
-  totalCart(): number,
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function Cart({
-  cart,
-  totalProduct,
-  dispatch,
-  totalCart,
   setModal,
 }: CartProps) {
 
-  const isEmpty = useMemo(() => cart.length === 0, [cart])
+  const {state, totalCart}= useCart();
+  const isEmpty = useMemo(() => state.cart.length === 0, [state.cart])
 
   return (
     <div className="bg-white rounded w-full p-6 pb-10 flex flex-col justify-center gap-5">
-      <h1 className="text-orange-700 font-bold text-2xl text-left">{`Your Cart (${cart.length})`}</h1>
+      <h1 className="text-orange-700 font-bold text-2xl text-left">{`Your Cart (${state.cart.length})`}</h1>
 
       {isEmpty ? (
         <div className="flex flex-col items-center gap-4">
@@ -34,12 +26,10 @@ export default function Cart({
         </div>
       ) : (
         <>
-          {cart.map((product) => (
+          {state.cart.map((product) => (
             <ProductCart
               key={product.id}
               product={product}
-              totalProduct={totalProduct}
-              deleteFromCart={() => dispatch({type:'delete from cart', payload: {product}})}
             />
           ))}
 

@@ -1,16 +1,16 @@
+import { useCart } from "../hooks/useCart";
 import type { ProductItem } from "../types";
 
 type ProductCartProps = {
   product: ProductItem;
-  totalProduct(id: number): number | undefined
-  deleteFromCart(product: ProductItem): void;
 };
 
 export default function ProductCart({
   product,
-  totalProduct,
-  deleteFromCart,
 }: ProductCartProps) {
+
+  const {totalProduct, dispatch}= useCart();
+
   return (
     <div className="flex justify-between items-center pb-4 border-b">
       <div>
@@ -29,7 +29,7 @@ export default function ProductCart({
         className="border-2 border-rose-300 w-fit h-full rounded-full p-1"
         aria-label="click this button to remove an item"
         type="button"
-        onClick={() => deleteFromCart(product)}
+        onClick={() => dispatch({type:'delete from cart', payload: {product}})}
       >
         <img className="w-auto" src="/icon-remove-item.svg" alt="Remove item" />
       </button>

@@ -1,15 +1,13 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import Cart from "./components/Cart";
 import ProductDetail from "./components/ProductDetail";
 import ProductOrderConfirm from "./components/ProductOrderConfirmed";
 import data from "./data/data.json";
-import { cartReducer, initialState } from "./reducer/cart-reducer";
 import { useCart } from "./hooks/useCart";
 
 function App() {
-  const [state, dispatch] = useReducer(cartReducer, initialState);
 
-  const { itemInCart, totalProduct, totalCart } = useCart(state.cart);
+  const { totalCart, state, dispatch } = useCart();
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(state.cart));
@@ -50,7 +48,6 @@ function App() {
                   <ProductOrderConfirm
                     key={product.id}
                     product={product}
-                    totalProduct={totalProduct}
                   />
                 ))}
                 <div className="flex justify-between items-center">
@@ -86,18 +83,12 @@ function App() {
               <ProductDetail
                 key={product.id}
                 product={product}
-                dispatch={dispatch}
-                itemInCart={itemInCart}
               />
             ))}
           </div>
         </div>
         <div className="md:w-1/3">
           <Cart
-            cart={state.cart}
-            totalProduct={totalProduct}
-            dispatch={dispatch}
-            totalCart={totalCart}
             setModal={setModal}
           />
         </div>

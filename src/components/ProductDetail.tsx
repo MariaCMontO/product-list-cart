@@ -1,25 +1,23 @@
-import type { CartActions } from "../reducer/cart-reducer";
-import type { Product, ProductItem } from "../types";
+
+import { useCart } from "../hooks/useCart";
+import type { Product } from "../types";
 
 type ProductDetailProps = {
   product: Product;
-  dispatch: React.ActionDispatch<[action: CartActions]>,
-   itemInCart(id: number): ProductItem | undefined
 };
 
 export default function ProductDetail({
   product,
-  dispatch,
-  itemInCart,
 }: ProductDetailProps) {
 
-
+  const {dispatch, itemInCart}= useCart();
   const {id}= product;
+  const item= itemInCart(id);
 
   return (
     <div aria-labelledby="product-name" className="">
       <div className="relative mb-10">
-        {itemInCart(id) === undefined || itemInCart(id)?.amount ===0 ? (
+        {item=== undefined || item.amount ===0 ? (
           <>
             <img
               className="rounded-lg"
@@ -65,7 +63,7 @@ export default function ProductDetail({
                 />
               </button>
               <p className="font-medium text-white">
-                {itemInCart(id)?.amount}
+                {item.amount}
               </p>
               <button
                 className="border rounded-full w-auto p-[2px]"

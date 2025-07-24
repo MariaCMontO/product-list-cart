@@ -1,7 +1,11 @@
+import { useCartContext } from "../context/CartContext";
 import type { ProductItem } from "../types";
 
 
-export const useCart = (cart: ProductItem[]) => {
+export const useCart = () => {
+
+  const {state, dispatch}= useCartContext();
+  const {cart}= state
 
   //Funciones auxiliares
   function itemInCart(id: number): ProductItem | undefined {
@@ -24,6 +28,8 @@ export const useCart = (cart: ProductItem[]) => {
   return {
     itemInCart,
     totalProduct,
-    totalCart
+    totalCart,
+    state,
+    dispatch
   };
 };

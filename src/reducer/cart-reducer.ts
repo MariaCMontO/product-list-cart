@@ -7,7 +7,7 @@ export type CartStates = {
 
 export type CartActions =
   | { type: "add to cart"; payload: { product: Product } }
-  | { type: "decrease from cart"; payload: { id:number } }
+  | { type: "decrease from cart"; payload: { id: number } }
   | { type: "delete from cart"; payload: { product: ProductItem } }
   | { type: "restart cart"; payload: {} };
 
@@ -22,25 +22,27 @@ export const initialState: CartStates = {
   cart: initialCart(),
 };
 
-export const cartReducer = (
-  state: CartStates = initialState,
-  action: CartActions
-) => {
-
+export const cartReducer = (state: CartStates, action: CartActions) => {
   if (action.type === "add to cart") {
-    //Verficiar si ya existe el producto en el carrito
-    const itemExist = state.cart.findIndex(
+    //Verficar si ya existe el producto en el carrito
+    const item = state.cart.find(
       (item) => item.id === action.payload.product.id
     );
-    let updatedCart = [...state.cart]; //Siempre trabajar sobre una copia del state
+    let updatedCart: ProductItem[] = [];
 
-    if (itemExist >= 0) {
-      //existe
-      updatedCart[itemExist].amount++;
+    //Hacer un arreglo de elementos copiados uno a uno depende si existe o no
+    if (item) {
+      updatedCart = state.cart.map((item) => {
+        if (item.id === action.payload.product.id) {
+          return { ...item, amount: item.amount + 1 };
+        } else {
+          return { ...item };
+        }
+      });
     } else {
       //No existe
       const newItem: ProductItem = { ...action.payload.product, amount: 1 };
-      updatedCart = [...state.cart, newItem];
+      updatedCart = [...state.cart, newItem]; //No es necesario copiar todos los objetos ya que solo se añade uno nuevo y no modificar los otros
     }
 
     return {
@@ -50,20 +52,16 @@ export const cartReducer = (
   }
 
   if (action.type === "decrease from cart") {
-    //Extraer el indice
-    const index = state.cart.findIndex(
-      (item) => item.id === action.payload.id
-    );
-    let updatedCart = [...state.cart]; //Siempre trabajar sobre una copia del state
-
-    if (index >= 0) {
-      updatedCart[index].amount--;
-      if (updatedCart[index].amount === 0) {
-        updatedCart = state.cart.filter(
-          (item) => item.id !== action.payload.id
-        );
-      }
-    }
+    
+    const updatedCart: ProductItem[] = state.cart
+      .map((item) => {
+        if (item.id === action.payload.id) {
+          return { ...item, amount: item.amount - 1 };
+        } else {
+          return { ...item };
+        }
+      })
+      .filter((item) => item.amount !== 0);
 
     return {
       ...state,
@@ -84,10 +82,10 @@ export const cartReducer = (
 
   if (action.type === "restart cart") {
     return {
-        ...state,
-        cart:[]
-    }
+      ...state,
+      cart: [],
+    };
   }
 
-  return state
+  return state;
 };

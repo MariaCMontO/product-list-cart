@@ -1,14 +1,15 @@
+import { useCart } from "../hooks/useCart";
 import type { ProductItem } from "../types";
 
 type ProductOrderConfirmProps = {
   product: ProductItem;
-  totalProduct(id: number): number | undefined
 };
 
 export default function ProductOrderConfirm({
   product,
-  totalProduct,
 }: ProductOrderConfirmProps) {
+
+  const {totalProduct}=useCart();
   return (
     <div className="flex justify-between items-center pb-4 border-b">
       <div className="flex gap-3">
