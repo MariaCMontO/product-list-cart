@@ -40,52 +40,21 @@ This is a solution to the [Product list with cart challenge on Frontend Mentor](
 
 ### What I learned
 
-With this project, I learned how to implement frameworks like react into my projects. I learned how to create components, include props and manage logic into them. I also learned how to include interaction with custom hooks like useCart.
+With this project, I learned how to implement frameworks like react into my projects. I learned how to create components, include props and manage logic into them. I also learned how to include interaction with a global state using useContext of react, other important fact i included in this project is the integration of the context and other auxliar function in a custom hook.
 
 ```ts
-import { useState } from "react";
-import type { Product, ProductItem } from "../types";
+import { useCartContext } from "../context/CartContext";
+import type { ProductItem } from "../types";
+
 
 export const useCart = () => {
-  //Creamos el state que guarda los items del carrito
-  const initialCart: ProductItem[] = [];
-  const [cart, setCart] = useState(initialCart);
 
-  const isEmpty = cart.length === 0;
-  //Funciones que modifican el state
+  const {state, dispatch}= useCartContext();
+  const {cart}= state
 
+  //Funciones auxiliares
   function itemInCart(id: number): ProductItem | undefined {
     return cart.find((item) => item.id === id);
-  }
-
-  function addToCart(product: Product) {
-    //Verficiar si ya existe el producto en el carrito
-    const itemExist = cart.findIndex((item) => item.id === product.id);
-
-    if (itemExist >= 0) {
-      //existe
-      const updatedCart = [...cart]; //Siempre trabajar sobre una copia del state
-      updatedCart[itemExist].amount++;
-      setCart(updatedCart);
-    } else {
-      //No existe
-      const newItem = { ...product, amount: 1 };
-      setCart([...cart, newItem]);
-    }
-  }
-
-  function decreaseFromCart(product: ProductItem) {
-    //Extraer el indice
-    const index = cart.findIndex((item) => item.id === product.id);
-
-    if (index >= 0) {
-      let updatedCart = [...cart]; //Siempre trabajar sobre una copia del state
-      updatedCart[index].amount--;
-      if (updatedCart[index].amount === 0) {
-        updatedCart = cart.filter((item) => item.id !== product.id);
-      }
-      setCart(updatedCart);
-    }
   }
 
   function totalProduct(id: number) {
@@ -101,27 +70,49 @@ export const useCart = () => {
     }, 0);
   }
 
-  function deleteFromCart(product: ProductItem) {
-    const updatedCart = cart.filter((item) => item.id !== product.id);
-    setCart(updatedCart);
-  }
-
-  function restartCart() {
-    setCart(initialCart);
-  }
-
   return {
-    cart,
-    isEmpty,
-    addToCart,
     itemInCart,
     totalProduct,
-    decreaseFromCart,
-    deleteFromCart,
     totalCart,
-    restartCart
+    state,
+    dispatch
   };
 };
+
+import { createContext, useContext, useReducer} from 'react';
+import type { ReactNode } from 'react';
+import { cartReducer, initialState} from '../reducer/cart-reducer';
+import type { CartStates, CartActions} from '../reducer/cart-reducer';
+
+//Tipo que define que tendrá el contexto
+type CartContextType ={
+    state: CartStates,
+    dispatch: React.Dispatch<CartActions>;
+}
+
+//Crear el contexto
+ const CartContext= createContext<CartContextType | null>(null);
+
+ //Crear el provider que envolverá el context
+ export function CartProvider({children}: {children: ReactNode}){
+    const [state, dispatch]= useReducer(cartReducer, initialState);
+
+    return (
+        <CartContext.Provider value={{state, dispatch}}>
+            {children}
+        </CartContext.Provider>
+    );
+ }
+
+ export function useCartContext(){
+    const context= useContext(CartContext);
+
+    if(!context){
+        throw new Error('useCart debe usarse dentro de CartProvider');
+    }
+
+    return context;
+ }
 
 ```
 
